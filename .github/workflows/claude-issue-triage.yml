@@ -49,7 +49,12 @@ jobs:
                usando EXCLUSIVAMENTE nombres exactos de labels que ya existen en el repo.
                Ejemplo: ["bug"]
 
-            b) .triage/diagnosis.md: diagnóstico en español, en Markdown, con estas secciones:
+            b) .triage/diagnosis.md: diagnóstico en español, con estas secciones.
+               Este contenido se publicará tal cual como comentario en GitHub, así que debe
+               estar en formato GitHub Flavored Markdown (GFM) válido, que GitHub renderice
+               correctamente: encabezados con ###, listas con - o 1., código en línea con
+               `backticks`, bloques de código con ``` y lenguaje (```js), tablas GFM y
+               listas de tareas (- [ ]) cuando aplique. No uses HTML ni texto plano sin formato.
                ### Resumen
                ### Tipo (bug / mejora / pregunta / documentación / otro)
                ### Áreas afectadas (archivos y funciones, con file:line, por ejemplo game.js:120)
