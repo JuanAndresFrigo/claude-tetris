@@ -1,1 +1,3 @@
 .DS_STORE
+# Claude issue triage output
+.triage/
