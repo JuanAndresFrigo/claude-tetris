@@ -136,11 +136,24 @@ body {
   letter-spacing: 1px;
 }
 
-#next-canvas {
+.hold-panel {
+  width: 120px;
+}
+
+#next-canvas,
+#hold-canvas {
   display: block;
   border: 1px solid var(--border);
   background: var(--board-bg);
   border-radius: 4px;
+}
+
+#hold-canvas {
+  transition: opacity 0.15s;
+}
+
+#hold-canvas.locked {
+  opacity: 0.4;
 }
 
 /* ---- Controles ---- */

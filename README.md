@@ -84,6 +84,7 @@ Después abre `http://localhost:8000` en el navegador.
 | `↑` o `X` | Rotar la pieza en sentido horario |
 | `↓`       | Soft drop (bajar más rápido)      |
 | `Espacio` | Hard drop (caída instantánea)     |
+| `C` / `Shift` | Reservar / intercambiar pieza (Hold, una vez por pieza) |
 | `P`       | Pausar / reanudar                 |
 
 ---
