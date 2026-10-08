@@ -237,6 +237,100 @@ kbd {
   background: var(--accent-hover);
 }
 
+/* ---- Menú de pausa ---- */
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--accent);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  width: 200px;
+}
+
+.menu.hidden {
+  display: none;
+}
+
+.menu-btn,
+.step-btn {
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.menu-btn:hover,
+.step-btn:hover,
+.menu-btn:focus-visible,
+.step-btn:focus-visible {
+  background: var(--accent-hover);
+}
+
+.menu-btn:focus-visible,
+.step-btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.level-select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.level-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+.level-stepper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.step-btn {
+  padding: 4px 14px;
+  font-size: 18px;
+}
+
+#start-level {
+  min-width: 28px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.controls-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.controls-list kbd {
+  margin-right: 4px;
+}
+
 /* ---- Toggle de tema ---- */
 .theme-toggle {
   position: fixed;
