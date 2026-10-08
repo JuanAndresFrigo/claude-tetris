@@ -4,17 +4,78 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
-  null,
-  '#4dd0e1', // I - cyan
-  '#ffd54f', // O - yellow
-  '#ba68c8', // T - purple
-  '#81c784', // S - green
-  '#e57373', // Z - red
-  '#90caf9', // J - pale blue
-  '#ffb74d', // L - orange
-  '#f06292', // Ring - pink
-];
+// Orden de colores: I, O, T, S, Z, J, L, Ring
+const SKINS = {
+  retro: {
+    colors: [null, '#4dd0e1', '#ffd54f', '#ba68c8', '#81c784', '#e57373', '#90caf9', '#ffb74d', '#f06292'],
+    draw(context, px, py, size, color) {
+      context.fillStyle = color;
+      context.fillRect(px + 1, py + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.12)';
+      context.fillRect(px + 1, py + 1, size - 2, 4);
+    },
+  },
+  neon: {
+    colors: [null, '#00f0ff', '#fff200', '#d400ff', '#39ff14', '#ff1744', '#2979ff', '#ff9100', '#ff2bd6'],
+    draw(context, px, py, size, color) {
+      context.save();
+      context.shadowColor = color;
+      context.shadowBlur = 12;
+      context.fillStyle = color + '33';
+      context.fillRect(px + 3, py + 3, size - 6, size - 6);
+      context.strokeStyle = color;
+      context.lineWidth = 2;
+      context.strokeRect(px + 3, py + 3, size - 6, size - 6);
+      context.restore();
+    },
+  },
+  pastel: {
+    colors: [null, '#a8e6ef', '#fff3b0', '#d9b8f0', '#b8ecc0', '#f7b9b9', '#b9d6f7', '#fcd5a5', '#f8bfd6'],
+    draw(context, px, py, size, color) {
+      context.fillStyle = color;
+      roundRectPath(context, px + 2, py + 2, size - 4, size - 4, size * 0.3);
+      context.fill();
+      context.fillStyle = 'rgba(255,255,255,0.45)';
+      roundRectPath(context, px + 6, py + 5, size - 12, 4, 2);
+      context.fill();
+    },
+  },
+  pixel: {
+    colors: [null, '#29b6f6', '#fdd835', '#ab47bc', '#66bb6a', '#ef5350', '#5c6bc0', '#ff9800', '#ec407a'],
+    draw(context, px, py, size, color) {
+      const u = size / 6; // "pixel" del bloque
+      context.fillStyle = color;
+      context.fillRect(px, py, size, size);
+      // sombra (abajo/derecha) y luz (arriba/izquierda)
+      context.fillStyle = 'rgba(0,0,0,0.35)';
+      context.fillRect(px, py + size - u, size, u);
+      context.fillRect(px + size - u, py, u, size);
+      context.fillStyle = 'rgba(255,255,255,0.45)';
+      context.fillRect(px, py, size - u, u);
+      context.fillRect(px, py, u, size - u);
+      // textura de tablero de ajedrez en el interior
+      context.fillStyle = 'rgba(0,0,0,0.15)';
+      for (let i = 1; i < 5; i++)
+        for (let j = 1; j < 5; j++)
+          if ((i + j) % 2 === 0) context.fillRect(px + i * u, py + j * u, u, u);
+      context.strokeStyle = 'rgba(0,0,0,0.6)';
+      context.lineWidth = 1;
+      context.strokeRect(px + 0.5, py + 0.5, size - 1, size - 1);
+    },
+  },
+};
+
+function roundRectPath(context, x, y, w, h, r) {
+  context.beginPath();
+  context.moveTo(x + r, y);
+  context.arcTo(x + w, y, x + w, y + h, r);
+  context.arcTo(x + w, y + h, x, y + h, r);
+  context.arcTo(x, y + h, x, y, r);
+  context.arcTo(x, y, x + w, y, r);
+  context.closePath();
+}
+
+let skin = SKINS.retro;
 
 const PIECES = [
   null,
@@ -44,6 +105,7 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const skinSelect = document.getElementById('skin-select');
 
 let hold, canHold;
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
@@ -185,13 +247,8 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  skin.draw(context, x * size, y * size, size, skin.colors[colorIndex]);
   context.globalAlpha = 1;
 }
 
@@ -362,6 +419,24 @@ themeToggle.addEventListener('click', () => {
   applyTheme(light ? 'light' : 'dark');
   themeToggle.blur(); // evitar que Space active el botón
 });
+
+function applySkin(name) {
+  if (!SKINS[name]) name = 'retro';
+  skin = SKINS[name];
+  document.documentElement.dataset.skin = name;
+  skinSelect.value = name;
+  try { localStorage.setItem('skin', name); } catch (e) { /* ignore */ }
+  if (current) { draw(); drawNext(); drawHold(); }
+}
+
+skinSelect.addEventListener('change', () => {
+  applySkin(skinSelect.value);
+  skinSelect.blur(); // evitar que las flechas cambien la opción durante el juego
+});
+
+let savedSkin = 'retro';
+try { savedSkin = localStorage.getItem('skin') || 'retro'; } catch (e) { /* ignore */ }
+applySkin(savedSkin);
 
 let savedTheme = 'dark';
 try { savedTheme = localStorage.getItem('theme') === 'light' ? 'light' : 'dark'; } catch (e) { /* ignore */ }
