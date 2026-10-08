@@ -485,3 +485,33 @@ kbd {
   font-weight: 700;
   cursor: pointer;
 }
+
+/* ---- Selector de skin ---- */
+.skin-picker {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skin-picker select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.skin-picker select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Neon: fondo negro para que el glow resalte */
+[data-skin="neon"] {
+  --board-bg: #000;
+  --grid: #14141f;
+}
